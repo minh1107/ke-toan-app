@@ -1,0 +1,78 @@
+.toast__message {
+    width: 300px;
+    height: 50px;
+    display: flex;
+    align-content: center;
+    align-items: center;
+    padding: 0 12px;
+    border: 1px solid #ccc;
+    box-shadow: 2px 1px 10px 1px #ccc;
+    border-radius: 4px;
+    justify-content: space-between;
+    position: fixed;
+    top: 25px;
+    right: 25px;
+    z-index: 999;
+}
+
+.toast__success {
+    background-color: #9CD5B3;
+}
+
+.toast__info {
+    background-color: #99CAFF;
+}
+
+.toast__warning {
+    background-color: #FFD699;
+}
+
+.toast__error {
+    background-color: #F59999;
+}
+
+img {
+    cursor: pointer;
+}
+
+.toast__message__content {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+
+.error--icon {
+    background: url('../../assets/image//Sprites.64af8f61.svg') no-repeat -752px -455px;
+	width: 36px;
+	height: 50px;
+    transform: scale(0.5);
+}
+
+.success--icon {
+    background: url('../../assets/image//Sprites.64af8f61.svg') no-repeat -990px -455px;
+	width: 36px;
+	height: 50px;
+    transform: scale(0.5);
+}
+
+.warning--icon {
+    background: url('../../assets/image//Sprites.64af8f61.svg') no-repeat -598px -455px;
+	width: 36px;
+	height: 50px;
+    transform: scale(0.5);
+}
+
+.info--icon {
+    background: url('../../assets/image//Sprites.64af8f61.svg') no-repeat -672px -455px;
+	width: 36px;
+	height: 50px;
+    transform: scale(0.5);
+}   
+
+.toast__message__box {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    justify-content: space-between;
+}

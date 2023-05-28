@@ -31,7 +31,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(employee, index) in employeeList" :key="index">
+          <tr @dblclick="() => handleOpenEmployeeDetail(employee)" v-for="(employee, index) in employeeListShow" :key="index">
             <td><input type="checkbox"></td>
             <td>{{ employee.EmployeeCode }}</td>
             <td>{{ employee.FullName }}</td>
@@ -44,8 +44,8 @@
             <td>{{ employee.AccountName }}</td>
             <td>{{ employee.AccountBranch }}</td>
             <td class="table-edit-column">
-              <div @click="() => handleOpenEmployeeDetail(employee.id)" class="table-edit-button edit-employee">Sửa</div>
-              <div @click="() => toggleOption(index)" class="table-edit-column__icon">
+              <div @click="() => handleOpenEmployeeDetail(employee)" class="table-edit-button edit-employee">Sửa</div>
+              <div @click="(event) => toggleOption(event, index)" class="table-edit-column__icon">
                 <div class="icon--down-color"></div>
               </div>
               <ul v-show="showList[index]" class="table-edit-column__list">
@@ -67,19 +67,15 @@
     </div>
     <div class="content__table__paging__quantity">
       <div class="content__table__paging__quantity__item">
-        <div>
-          <span id="numberRecordInPage">20</span>
+        <div @click="showSelectPaging">
+          <span id="numberRecordInPage">{{numberPage}}</span>
           <span> bảng ghi trên 1 trang</span>
         </div>
         <div class="content__icon">
           <div class="icon--up-gray"></div>
         </div>
-        <ul class="paging__display-setting">
-          <li>10 bảng ghi trên 1 trang</li>
-          <li>20 bảng ghi trên 1 trang</li>
-          <li>30 bảng ghi trên 1 trang</li>
-          <li>50 bảng ghi trên 1 trang</li>
-          <li>100 bảng ghi trên 1 trang</li>
+        <ul v-if="showPaging" class="paging__display-setting">
+          <li @click="() => selectPaging(page)" v-for="(page, index) in pagingList" :key="index">{{page}} bảng ghi trên 1 trang</li>
         </ul>
       </div>
       <div class="paging__unit">
@@ -93,42 +89,49 @@
       </div>
     </div>
   </div>
-  <EmployeeDetail :isEdit="isEdit" :idEdit="idEdit" @onCloseDialog="closeDialog" v-if="isShowDetail" :employeeList="employeeList"></EmployeeDetail>
+  <EmployeeDetail :employeeInfoSelected="employeeInfoSelected" :isEdit="isEdit" @onCloseDialog="closeDialog" v-if="isShowDetail" :employeeList="employeeList"></EmployeeDetail>
   <MisaDialogDelete @onCloseDialog="closeDialogDelete" @onDeleteDialog="deleteDialog" v-if="isShowDeleteDialog"></MisaDialogDelete>
+  <ToastMessage v-if="showMessage" :typeMessage="typeMessage"></ToastMessage>
 </template>
 
 <script>
+import ToastMessage from '@/components/toastmessage/ToastMessage.vue'
 import EmployeeDetail from './EmployeeDetail.vue'
 import MisaDialogDelete from '@/components/misadialog/MisaDialogDelete.vue'
 import MisaInput from '@/components/MisaInput.vue'
-import axios from 'axios'
-import { deleteEmployeeApi } from '../../apis/employee/employee'
+import { deleteEmployeeApi, getEmployeeApi } from '../../apis/employee/employee'
 export default {
   name: 'EmployeeList',
   components: {
-    EmployeeDetail, MisaInput, MisaDialogDelete
+    EmployeeDetail, MisaInput, MisaDialogDelete, ToastMessage
   },
   props: [''],
   data() {
     return {
       isShowDetail: false,
       employeeList: [],
+      employeeListShow: [],
       showList: [],
       isShowDeleteDialog: false,
       idItem: null,
       isEdit: false,
-      idEdit: null
+      employeeInfoSelected: {},
+      showMessage: false,
+      typeMessage: 'success',
+      showPaging: false,
+      pagingList: [10, 20,30, 50, 100],
+      numberPage: 20
     }
   },
   methods: {
-    handleOpenEmployeeDetail(id) {
+    handleOpenEmployeeDetail(employee) {
       this.isShowDetail = true
-      if(typeof id === "number") {
+      if(typeof employee.id === "number") {
         this.isEdit = true
-        this.idEdit = id
+        this.employeeInfoSelected = employee
       } else {
         this.isEdit = false
-        this.idEdit = null
+        this.employeeInfoSelected = null
       }
     },
     closeDialog() {
@@ -140,15 +143,33 @@ export default {
             this.showList[i] = false
         })
     },
+    messageFail() {
+      this.showMessage = true
+      this.typeMessage = 'fail'
+      setTimeout(() => {
+        this.showMessage = false
+      }, 1000);
+    },
+    messageSuccess() {
+      this.showMessage = true
+      this.typeMessage = 'success'
+      setTimeout(() => {
+        this.showMessage = false
+      }, 1000);
+    },
     async deleteDialog() {
       const res = await deleteEmployeeApi(this.idItem)
       this.isShowDeleteDialog = false
       this.showList.forEach((show, i) => {
             this.showList[i] = false
         })
-      return res
+        console.log(res.status)
+      if(res.status === 200 ) {
+        this.messageSuccess()
+      } else this.messageFail()
     },
-    toggleOption(index) {
+    toggleOption(event, index) {
+      event.stopPropagation(); 
       if (this.showList[index]) {
         this.showList[index] = false
       } else {
@@ -166,13 +187,17 @@ export default {
       this.idItem = id
     },
     async getEmployeeList() {
-      try {
-        const res = await axios.get('http://localhost:3000/employee')
-        this.employeeList = res.data
-        console.log(res.data)
-      } catch (error) {
-        console.log(error)
-      }
+      const data = await getEmployeeApi()
+      this.employeeList = data
+      this.employeeListShow = data.filter((item, index) => index < this.numberPage)
+    },
+    showSelectPaging() {
+      this.showPaging ? this.showPaging = false : this.showPaging = true
+    },
+    selectPaging(page) {
+      this.numberPage = page
+      this.employeeListShow = this.employeeList.filter((item, index) => index < this.numberPage)
+      this.showPaging = false
     }
   },
   created() {

@@ -1,27 +1,38 @@
 import axios from "axios"
 
+const getEmployeeApi = async () => {
+    try {
+        const res = await axios.get('http://localhost:3000/employee')
+        return res.data
+      } catch (error) {
+        console.log(error)
+      }
+}
+
 const addEmployeeApi = async (
-    EmployeeType,
-    EmployeeCode,
-    FullName,
-    DateOfBirth,
-    GenderName,
-    UnitName,
-    CitizenIdentification,
-    CitizenIdentificationDate,
-    TitleInfo,
-    IssuedBy,
-    AddressInfo,
-    MobilePhone,
-    Landline,
-    EmailAccount,
-    AccountNumber,
-    AccountName,
-    AccountBranch,
+    {   isCustomer,
+        isProvider,
+        EmployeeCode,
+        FullName,
+        DateOfBirth,
+        GenderName,
+        UnitName,
+        CitizenIdentification,
+        CitizenIdentificationDate,
+        TitleInfo,
+        IssuedBy,
+        AddressInfo,
+        MobilePhone,
+        Landline,
+        EmailAccount,
+        AccountNumber,
+        AccountName,
+        AccountBranch }
 ) => {
     try {
         const res = await axios.post('http://localhost:3000/employee', {
-            EmployeeType: EmployeeType || "",
+            isCustomer,
+            isProvider,
             EmployeeCode,
             FullName,
             DateOfBirth,
@@ -39,7 +50,7 @@ const addEmployeeApi = async (
             AccountName,
             AccountBranch,
         })
-        console.log(res.data)
+        return res
     } catch (error) {
         console.log(error)
     }
@@ -47,21 +58,26 @@ const addEmployeeApi = async (
 
 const deleteEmployeeApi = async (id) => {
     try {
-        console.log(`http://localhost:3000/employee/${id}`)
         const res = await axios.delete(`http://localhost:3000/employee/${id}`)
         return res
     } catch (error) {
-        console.log(error)        
+        console.log(error)
+    }
+}
+
+const updateEmployeeApi = async (id, data) => {
+    try {
+        console.log(id, data)
+        const res = await axios.put(`http://localhost:3000/employee/${id}`, data)
+        return res
+    } catch (error) {
+        console.log(error)
     }
 }
 
 export {
-    addEmployeeApi, deleteEmployeeApi
+    addEmployeeApi, deleteEmployeeApi, updateEmployeeApi, getEmployeeApi
 }
-
-
-
-
 // async AddEmployee() {
 //     try {
 //       const res = await axios.post('http://localhost:3000/employee', {

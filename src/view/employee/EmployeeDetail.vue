@@ -5,13 +5,11 @@
         <div class="detail-employee__title__item">
           <h1>Thông tin nhân viên</h1>
           <div>
-            <input v-model="employee.EmployeeType" type="radio" id="checkbox2" name="typeEmployee"
-              value="Khách hàng">
+            <input v-model="employee.isCustomer" type="checkbox">
             <label>Là khách hàng</label>
           </div>
           <div>
-            <input v-model="employee.EmployeeType" type="radio" id="checkbox2" name="typeEmployee"
-              value="Nhà cung cấp">
+            <input v-model="employee.isProvider" type="checkbox">
             <label>Là nhà cung cấp</label>
           </div>
         </div>
@@ -24,11 +22,11 @@
         <div class="detail-employee__item-group w-50">
           <div class="detail-employee__item w-40">
             <label for="">Mã <span style="color: #E60000;">*</span></label>
-            <MisaInput ref="employeeCode" :placeholder="'Nhập mã nhân viên'"></MisaInput>
+            <MisaInput ref="employeeCode" v-model="employee.EmployeeCode" :placeholder="'Nhập mã nhân viên'"></MisaInput>
           </div>
           <div class="detail-employee__item w-60">
             <label for="">Tên <span style="color: #E60000;">*</span></label>
-            <MisaInput ref="employeeFullName" :placeholder="'Nhập tên nhân viên'"></MisaInput>
+            <MisaInput ref="fullName" v-model="employee.FullName" :placeholder="'Nhập tên nhân viên'"></MisaInput>
 
           </div>
         </div>
@@ -57,7 +55,7 @@
         </div>
         <div class="detail-employee__item detail-employee__unit w-50">
           <label for="">Đơn vị <span style="color: #E60000;">*</span></label>
-          <div @click="showSelectUnit" ref="employeeUnitName" class="input-custom">
+          <div @click="showSelectUnit" ref="unitName" class="input-custom">
             {{ (employee.UnitName === 'Bỏ chọn' || employee.UnitName === undefined) ? '-- Nhập đơn vị' :
               employee.UnitName }}</div>
           <ul v-show="selectUnit" class="detail-employee__unit__list">
@@ -69,7 +67,7 @@
         <div class="detail-employee__item-group w-50">
           <div class="detail-employee__item w-60">
             <label title="Số chứng minh nhân dân">Số CMND</label>
-            <MisaInput ref="employeeCitizenIdentification" :placeholder="'Số chứng minh nhân dân'"></MisaInput>
+            <MisaInput v-model="employee.CitizenIdentification" :placeholder="'Số chứng minh nhân dân'"></MisaInput>
           </div>
           <div class="detail-employee__item w-40">
             <label for="">Ngày cấp</label>
@@ -78,42 +76,42 @@
         </div>
         <div class="detail-employee__item w-50">
           <label for="">Chức danh</label>
-          <MisaInput ref="employeeTitleInfo" :placeholder="'Nhập chức danh'"></MisaInput>
+          <MisaInput v-model="employee.TitleInfo" :placeholder="'Nhập chức danh'"></MisaInput>
         </div>
         <div class="detail-employee__item w-50">
           <label for="">Nơi cấp</label>
-          <MisaInput ref="employeeIssuedBy" :placeholder="'Nhập nơi cấp'"></MisaInput>
+          <MisaInput v-model="employee.IssuedBy" :placeholder="'Nhập nơi cấp'"></MisaInput>
         </div>
         <div class="detail-employee__item w-100">
           <label for="">Địa chỉ</label>
-          <MisaInput ref="employeeAddressInfo" :placeholder="'Nhập địa chỉ'"></MisaInput>
+          <MisaInput v-model="employee.AddressInfo" :placeholder="'Nhập địa chỉ'"></MisaInput>
         </div>
         <div class="detail-employee__item-group w-100">
           <div class="detail-employee__item w-25">
             <label title="Điện thoại di động">ĐT di động</label>
-            <MisaInput ref="employeeMobilePhone" :placeholder="'Nhập só điện thoại di động'"></MisaInput>
+            <MisaInput v-model="employee.MobilePhone" :placeholder="'Nhập só điện thoại di động'"></MisaInput>
           </div>
           <div class="detail-employee__item w-25">
             <label title="Điện thoại cố định">ĐT cố định</label>
-            <MisaInput ref="employeeLandline" :placeholder="'Nhập số điện thoại cố định'"></MisaInput>
+            <MisaInput v-model="employee.Landline" :placeholder="'Nhập số điện thoại cố định'"></MisaInput>
           </div>
           <div class="detail-employee__item w-25">
             <label for="">Email</label>
-            <MisaInput ref="employeeEmailAccount" :placeholder="'Nhập email'"></MisaInput>
+            <MisaInput v-model="employee.EmailAccount" :placeholder="'Nhập email'"></MisaInput>
           </div>
         </div>
         <div class="detail-employee__item-group w-100">
           <div class="detail-employee__item w-25">
             <label for="">Tài khoản ngân hàng</label>
-            <MisaInput ref="employeeAccountNumber" :placeholder="'Nhập tài khoản ngân hàng'"></MisaInput>
+            <MisaInput v-model="employee.AccountNumber" :placeholder="'Nhập tài khoản ngân hàng'"></MisaInput>
           </div>
           <div class="detail-employee__item w-25">
             <label for="">Tên tài khoản</label>
-            <MisaInput ref="employeeAccountName" :placeholder="'Nhập tên tài khoản'"></MisaInput>
+            <MisaInput v-model="employee.AccountName" :placeholder="'Nhập tên tài khoản'"></MisaInput>
           </div>
           <div class="detail-employee__item w-25">
             <label for="">Chi nhánh</label>
-            <MisaInput ref="employeeAccountBranch" :placeholder="'Nhập chi nhánh'"></MisaInput>
+            <MisaInput v-model="employee.AccountBranch" :placeholder="'Nhập chi nhánh'"></MisaInput>
           </div>
         </div>
       </div>
@@ -123,7 +121,7 @@
         </div>
         <div class="detail-employee__item-group">
           <div class="button button--secondary">Cất</div>
-          <div @click="addEmployee" id="button--approve-add-and-change"
+          <div @click="handleSubmit" id="button--approve-add-and-change"
             class="button button--primary detail-employee__button-edit">Cất và thêm
           </div>
         </div>
@@ -131,12 +129,13 @@
     </div>
   </div>
   <MisaDialogExist @onCloseDialog="closeDialog" v-show="MisaDialogExist"></MisaDialogExist>
+  <ToastMessage v-if="showMessage" :typeMessage="typeMessage"></ToastMessage>
 </template>
-
 <script>
+import ToastMessage from '@/components/toastmessage/ToastMessage.vue'
 import MisaDialogExist from '@/components/misadialog/MisaDialogExist.vue';
 import MisaInput from '@/components/MisaInput.vue';
-import { addEmployeeApi } from '../../apis/employee/employee'
+import { addEmployeeApi, updateEmployeeApi } from '../../apis/employee/employee'
 export default {
   name: 'EmployeeDetail',
   props: {
@@ -148,10 +147,13 @@ export default {
     },
     isEdit: {
       type: String
+    },
+    employeeInfoSelected: {
+      type: Object
     }
   },
   components: {
-    MisaInput, MisaDialogExist
+    MisaInput, MisaDialogExist, ToastMessage
   },
   data() {
     return {
@@ -160,13 +162,35 @@ export default {
       unitList: [
         "Bỏ chọn", "Misa", "FPT", "Vietel"
       ],
+      showMessage: false,
+      typeMessage: 'success',
       isChecked: false,
-      employee: {}
+      employee: {
+        isCustomer: false,
+        isProvider: false,
+        EmployeeCode: '',
+        FullName: '',
+        DateOfBirth: '',
+        GenderName: '',
+        UnitName: '',
+        CitizenIdentification: '',
+        CitizenIdentificationDate: '',
+        TitleInfo: '',
+        IssuedBy: '',
+        AddressInfo: '',
+        MobilePhone: '',
+        Landline: '',
+        EmailAccount: '',
+        AccountNumber: '',
+        AccountName: '',
+        AccountBranch: '',
+      }
     }
   },
   created() {
     if (this.isEdit) {
-      this.employee = this.employeeList[this.idEdit]
+      const newEmployee = JSON.stringify(this.employeeInfoSelected)
+      this.employee = JSON.parse(newEmployee)
     } else {
       this.employee = {}
     }
@@ -185,53 +209,77 @@ export default {
       this.employee.UnitName = unit
       this.selectUnit = false
     },
-    async addEmployee() {
-      let codeExist = this.employeeList.some(i => i.EmployeeCode === this.$refs.employeeCode.inputValue)
-      if (this.$refs.employeeCode.inputValue === '' || this.$refs.employeeFullName.inputValue === '' || this.employee.UnitName === undefined || this.employee.UnitName === 'Bỏ chọn') {
-        if (this.$refs.employeeCode.inputValue === '')
-          this.$refs.employeeCode.$el.style.border = '1px solid red'
-        this.$refs.employeeCode.$el.title = 'Mã không được để trống.'
-        if (this.$refs.employeeFullName.inputValue === '')
-          this.$refs.employeeFullName.$el.style.border = '1px solid red'
-        this.$refs.employeeFullName.$el.title = 'Tên không được để trống.'
-        if (this.employee.UnitName === undefined || this.employee.UnitName === 'Bỏ chọn') {
-          this.$refs.employeeUnitName.setAttribute('style', 'border: 1px solid red')
-          this.$refs.employeeUnitName.setAttribute('title', 'Đơn vị không được để trống.')
-        }
-      } else if (codeExist === false) {
-        this.$refs.employeeCode.$el.style.border = '1px solid #e6e6e6'
-        this.$refs.employeeFullName.$el.style.border = '1px solid #e6e6e6'
-        this.$refs.employeeUnitName.setAttribute('style', 'border: 1px solid #e6e6e6')
-        const res = await addEmployeeApi(
-          this.employee.EmployeeType,
-          this.$refs.employeeCode.inputValue,
-          this.$refs.employeeFullName.inputValue,
-          this.employee.DateOfBirth,
-          this.employee.GenderName,
-          this.employee.UnitName,
-          this.$refs.employeeCitizenIdentification.inputValue,
-          this.employee.CitizenIdentificationDate,
-          this.$refs.employeeTitleInfo.inputValue,
-          this.$refs.employeeIssuedBy.inputValue,
-          this.$refs.employeeAddressInfo.inputValue,
-          this.$refs.employeeMobilePhone.inputValue,
-          this.$refs.employeeLandline.inputValue,
-          this.$refs.employeeEmailAccount.inputValue,
-          this.$refs.employeeAccountNumber.inputValue,
-          this.$refs.employeeAccountName.inputValue,
-          this.$refs.employeeAccountBranch.inputValue,
-        )
-        console.log(res)
+    handleSubmit() {
+      if (this.isEdit) {
+        this.updateEmployee()
+      }
+      else this.addEmployee()
+    },
+    checkExist() {
+      let codeExist = this.employeeList.some(i => (i.EmployeeCode === this.employee.EmployeeCode))
+      return codeExist
+    },
+    messageFail() {
+      this.showMessage = true
+      this.typeMessage = 'fail'
+      setTimeout(() => {
+        this.showMessage = false
+      }, 1000);
+    },
+    messageSuccess() {
+      this.showMessage = true
+      this.typeMessage = 'success'
+      setTimeout(() => {
         this.handleCloseEmployeeDetail()
-        if (res) {
-          console.log('first')
+      }, 1000);
+    },
+    checkValidate() {
+      if (this.employee.EmployeeCode === (undefined || '')) {
+        this.$refs.employeeCode.$el.style.border = '1px solid red'
+        this.$refs.employeeCode.$el.title = 'Mã không được để trống.'
+      }
+      if (this.employee.FullName === (undefined || '')) {
+        this.$refs.fullName.$el.style.border = '1px solid red'
+        this.$refs.fullName.$el.title = 'Tên không được để trống.'
+      }
+      if (this.employee.UnitName === undefined || this.employee.UnitName === 'Bỏ chọn') {
+        this.$refs.unitName.setAttribute('style', 'border: 1px solid red')
+        this.$refs.unitName.setAttribute('title', 'Đơn vị không được để trống.')
+      }
+      this.messageFail()
+    },
+    async addEmployee() {
+      if (this.employee.EmployeeCode === '' || this.employee.FullName === '' || this.employee.UnitName === undefined || this.employee.UnitName === 'Bỏ chọn') {
+        this.checkValidate()
+      } else if (!this.checkExist()) {
+        const res = await addEmployeeApi(this.employee)
+        if (res.status === 201) {
+          this.messageSuccess()
+        } else {
+          this.messageFail()
         }
       } else {
         this.MisaDialogExist = true
       }
+    },
+    async updateEmployee() {
+      if (this.employee.EmployeeCode === '' || this.employee.FullName === '' || this.employee.UnitName === undefined || this.employee.UnitName === 'Bỏ chọn') {
+        this.checkValidate()
+      }
+      else if (!this.checkExist()) {
+        const res = await updateEmployeeApi(this.employee.id, this.employee)
+        if (200 === res.status) {
+          this.messageSuccess()
+        } else {
+          this.showMessage = true
+          this.typeMessage = 'fail'
+        }
+      }
+      else {
+        this.MisaDialogExist = true
+      }
     }
   },
-
 }
 </script>
 

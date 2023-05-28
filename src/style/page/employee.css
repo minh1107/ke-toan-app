@@ -183,8 +183,11 @@
     border: 1px solid var(--box-shadow-color);
     right: 12px;
   }
+
+  .table-edit-column:last-child{
+  }
   
-  .table-edit-column__list>li {
+  .table-edit-column__list > li {
     list-style: none;
     text-align: left;
     padding: 0 12px;
@@ -236,7 +239,7 @@
     top: 0;
     right: 0px;
     width: 1px;
-    height: 40px;
+    height: 100%;
     background-color: var(--box-shadow-color);
   }
   
@@ -293,7 +296,6 @@
   }
   
   .paging__display-setting {
-    display: none;
     position: absolute;
     background-color: var(--primary-color);
     border: 1px solid var(--box-shadow-color);

@@ -1,13 +1,18 @@
 <template>
-    <input v-model="inputValue" type="text" class="input-custom">
+    <input type="text" class="input-custom"
+    @input="$emit('update:modelValue', $event.target.value)"
+    :value="modelValue" 
+    >
 </template>
 
 <script>
     export default {
         name: 'MisaInput',
+        props: {
+            modelValue: String,
+        },
         data() {
             return {
-                inputValue: ''
             }
         }
     }
