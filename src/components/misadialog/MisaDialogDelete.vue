@@ -16,9 +16,19 @@
     export default {
         name: 'MisaDialogDelete',
         methods: {
+            /**
+             * Description: Đóng dialog 
+             * Create by: Nguyen Quang Minh
+             * Create date: 28-05-2023 21:51:35
+             */
           onCloseDialog() {
             this.$emit('onCloseDialog')
           },
+            /**
+             * Description: Xóa dialog 
+             * Create by: Nguyen Quang Minh
+             * Create date: 28-05-2023 21:51:44
+             */
           onDeleteDialog() {
             this.$emit('onDeleteDialog')
           }

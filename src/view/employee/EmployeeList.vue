@@ -1,7 +1,7 @@
 <template>
   <div class="content__title">
     <h1>Nhân viên</h1>
-    <div @click="handleOpenEmployeeDetail" class="button add-employee button--primary">Thêm mới nhân viên</div>
+    <div @click="openEmployeeDetail" class="button add-employee button--primary">Thêm mới nhân viên</div>
   </div>
   <div class="content__search">
     <div class="content__search__input">
@@ -31,7 +31,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr @dblclick="() => handleOpenEmployeeDetail(employee)" v-for="(employee, index) in employeeListShow" :key="index">
+          <tr @dblclick="() => openEmployeeDetail(employee)" v-for="(employee, index) in employeeListShow" :key="index">
             <td><input type="checkbox"></td>
             <td>{{ employee.EmployeeCode }}</td>
             <td>{{ employee.FullName }}</td>
@@ -44,7 +44,7 @@
             <td>{{ employee.AccountName }}</td>
             <td>{{ employee.AccountBranch }}</td>
             <td class="table-edit-column">
-              <div @click="() => handleOpenEmployeeDetail(employee)" class="table-edit-button edit-employee">Sửa</div>
+              <div @click="() => openEmployeeDetail(employee)" class="table-edit-button edit-employee">Sửa</div>
               <div @click="(event) => toggleOption(event, index)" class="table-edit-column__icon">
                 <div class="icon--down-color"></div>
               </div>
@@ -91,11 +91,11 @@
   </div>
   <EmployeeDetail :employeeInfoSelected="employeeInfoSelected" :isEdit="isEdit" @onCloseDialog="closeDialog" v-if="isShowDetail" :employeeList="employeeList"></EmployeeDetail>
   <MisaDialogDelete @onCloseDialog="closeDialogDelete" @onDeleteDialog="deleteDialog" v-if="isShowDeleteDialog"></MisaDialogDelete>
-  <ToastMessage v-if="showMessage" :typeMessage="typeMessage"></ToastMessage>
+  <MisaToastMessage v-if="showMessage" :typeMessage="typeMessage"></MisaToastMessage>
 </template>
 
 <script>
-import ToastMessage from '@/components/toastmessage/ToastMessage.vue'
+import MisaToastMessage from '@/components/toastmessage/MisaToastMessage.vue'
 import EmployeeDetail from './EmployeeDetail.vue'
 import MisaDialogDelete from '@/components/misadialog/MisaDialogDelete.vue'
 import MisaInput from '@/components/MisaInput.vue'
@@ -103,7 +103,7 @@ import { deleteEmployeeApi, getEmployeeApi } from '../../apis/employee/employee'
 export default {
   name: 'EmployeeList',
   components: {
-    EmployeeDetail, MisaInput, MisaDialogDelete, ToastMessage
+    EmployeeDetail, MisaInput, MisaDialogDelete, MisaToastMessage
   },
   props: [''],
   data() {
@@ -123,8 +123,21 @@ export default {
       numberPage: 20
     }
   },
+    /**
+     * Description: Lấy dự liêu 
+     * Create by: Nguyen Quang Minh
+     * Create date: 28-05-2023 21:37:34
+     */
+  created() {
+    this.getEmployeeList();
+  },
   methods: {
-    handleOpenEmployeeDetail(employee) {
+      /**
+       * Description: Mở form sửa hoặc thêm thông tin nhân viên
+       * Create by: Nguyen Quang Minh
+       * Create date: 28-05-2023 21:37:55
+       */
+    openEmployeeDetail(employee) {
       this.isShowDetail = true
       if(typeof employee.id === "number") {
         this.isEdit = true
@@ -134,15 +147,30 @@ export default {
         this.employeeInfoSelected = null
       }
     },
+    /**
+     * Description: Đóng dialog 
+     * Create by: Nguyen Quang Minh
+     * Create date: 28-05-2023 21:39:21
+     */
     closeDialog() {
       this.isShowDetail = false
     },
+    /**
+     * Description: Đóng dilog hỏi xóa một thông tin nhân viên
+     * Create by: Nguyen Quang Minh
+     * Create date: 28-05-2023 21:39:40
+     */
     closeDialogDelete() {
       this.isShowDeleteDialog = false
       this.showList.forEach((show, i) => {
             this.showList[i] = false
         })
     },
+    /**
+     * Description: Hiển thị message thất bại
+     * Create by: Nguyen Quang Minh
+     * Create date: 28-05-2023 21:40:13
+     */
     messageFail() {
       this.showMessage = true
       this.typeMessage = 'fail'
@@ -150,6 +178,11 @@ export default {
         this.showMessage = false
       }, 1000);
     },
+    /**
+     * Description: Xử lý khi message thành công
+     * Create by: Nguyen Quang Minh
+     * Create date: 28-05-2023 21:42:28
+     */
     messageSuccess() {
       this.showMessage = true
       this.typeMessage = 'success'
@@ -157,17 +190,26 @@ export default {
         this.showMessage = false
       }, 1000);
     },
+    /**
+     * Description: Thực hiện hành động xóa khi ấn vào button xóa trong dialog 
+     * Create by: Nguyen Quang Minh
+     * Create date: 28-05-2023 21:45:19
+     */
     async deleteDialog() {
       const res = await deleteEmployeeApi(this.idItem)
       this.isShowDeleteDialog = false
       this.showList.forEach((show, i) => {
             this.showList[i] = false
         })
-        console.log(res.status)
       if(res.status === 200 ) {
         this.messageSuccess()
       } else this.messageFail()
     },
+    /**
+     * Description: Khở các list option các lựa chọn với hàng dữ liệu
+     * Create by: Nguyen Quang Minh
+     * Create date: 28-05-2023 21:48:25
+     */
     toggleOption(event, index) {
       event.stopPropagation(); 
       if (this.showList[index]) {
@@ -182,26 +224,43 @@ export default {
         this.showList[index] = true
       }
     },
+    /**
+     * Description: Xóa item
+     * Create by: Nguyen Quang Minh
+     * Create date: 28-05-2023 21:48:53
+     */
     onDeleteItem(id) {
       this.isShowDeleteDialog = true
       this.idItem = id
     },
+    /**
+     * Description: Lấy thông tin các employee
+     * Create by: Nguyen Quang Minh
+     * Create date: 28-05-2023 21:49:07
+     */
     async getEmployeeList() {
       const data = await getEmployeeApi()
       this.employeeList = data
       this.employeeListShow = data.filter((item, index) => index < this.numberPage)
     },
+    /**
+     * Description: Hiển thị các tùy chọn hiển thị số lượng trên table
+     * Create by: Nguyen Quang Minh
+     * Create date: 28-05-2023 21:50:13
+     */
     showSelectPaging() {
       this.showPaging ? this.showPaging = false : this.showPaging = true
     },
+    /**
+     * Description: Chọn số lượng muốn hiển thị 
+     * Create by: Nguyen Quang Minh
+     * Create date: 28-05-2023 21:51:04
+     */
     selectPaging(page) {
       this.numberPage = page
       this.employeeListShow = this.employeeList.filter((item, index) => index < this.numberPage)
       this.showPaging = false
     }
-  },
-  created() {
-    this.getEmployeeList();
   }
 }
 </script>

@@ -13,6 +13,11 @@
     export default {
         name: 'MisaDialogExist',
         methods: {
+            /**
+             * Description: Đóng dialog 
+             * Create by: Nguyen Quang Minh
+             * Create date: 28-05-2023 21:52:08
+             */
           closeDialog() {
             this.$emit('onCloseDialog')
           }

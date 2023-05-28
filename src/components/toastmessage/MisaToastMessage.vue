@@ -12,7 +12,7 @@
 
 <script>
 export default {
-    name: 'ToastMessage',
+    name: 'MisaToastMessage',
     props: {
         typeMessage: {
             type: String

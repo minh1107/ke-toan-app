@@ -15,7 +15,7 @@
         </div>
         <div class="detail-employee__title__item">
           <div class="icon--info"></div>
-          <div @click="handleCloseEmployeeDetail" class="icon--close detail-employee__title__item__close-icon"></div>
+          <div @click="closeEmployeeDetail" class="icon--close detail-employee__title__item__close-icon"></div>
         </div>
       </div>
       <div class="detail-employee__list">
@@ -117,7 +117,7 @@
       </div>
       <hr class="bt-48">
       <div class="detail-employee__action">
-        <div @click="handleCloseEmployeeDetail" id="button--cancel-add-and-change" class="button button--secondary">Hủy
+        <div @click="closeEmployeeDetail" id="button--cancel-add-and-change" class="button button--secondary">Hủy
         </div>
         <div class="detail-employee__item-group">
           <div class="button button--secondary">Cất</div>
@@ -129,10 +129,10 @@
     </div>
   </div>
   <MisaDialogExist @onCloseDialog="closeDialog" v-show="MisaDialogExist"></MisaDialogExist>
-  <ToastMessage v-if="showMessage" :typeMessage="typeMessage"></ToastMessage>
+  <MisaToastMessage v-if="showMessage" :typeMessage="typeMessage"></MisaToastMessage>
 </template>
 <script>
-import ToastMessage from '@/components/toastmessage/ToastMessage.vue'
+import MisaToastMessage from '@/components/toastmessage/MisaToastMessage.vue'
 import MisaDialogExist from '@/components/misadialog/MisaDialogExist.vue';
 import MisaInput from '@/components/MisaInput.vue';
 import { addEmployeeApi, updateEmployeeApi } from '../../apis/employee/employee'
@@ -153,7 +153,7 @@ export default {
     }
   },
   components: {
-    MisaInput, MisaDialogExist, ToastMessage
+    MisaInput, MisaDialogExist, MisaToastMessage
   },
   data() {
     return {
@@ -187,6 +187,11 @@ export default {
       }
     }
   },
+  /**
+   * Description: Khởi tạo dữ liệu và check bảng employee detail là sửa hay tạo mới
+   * Create by: Nguyen Quang Minh
+   * Create date: 28-05-2023 21:18:09
+   */
   created() {
     if (this.isEdit) {
       const newEmployee = JSON.stringify(this.employeeInfoSelected)
@@ -196,29 +201,64 @@ export default {
     }
   },
   methods: {
-    handleCloseEmployeeDetail() {
+    /**
+     * Description: Đóng bảng employee detail 
+     * Create by: Nguyen Quang Minh
+     * Create date: 28-05-2023 21:23:24
+     */
+    closeEmployeeDetail() {
       this.$emit('onCloseDialog')
     },
+    /**
+     * Description: Đóng dialog  
+     * Create by: Nguyen Quang Minh
+     * Create date: 28-05-2023 21:24:11
+     */
     closeDialog() {
       this.MisaDialogExist = false
     },
+    /**
+     * Description: Khởi tạo 
+     * Create by: Nguyen Quang Minh
+     * Create date: 28-05-2023 21:25:16
+     */
     showSelectUnit() {
       this.selectUnit = true
     },
+    /**
+     * Description: Khởi tạo 
+     * Create by: Nguyen Quang Minh
+     * Create date: 28-05-2023 21:27:10
+     */
     handleSelectUnit(unit) {
       this.employee.UnitName = unit
       this.selectUnit = false
     },
+    /**
+     * Description: Submit dữ liệu thực hiện thêm nhân viên hoặc sửa nhân viên 
+     * Create by: Nguyen Quang Minh
+     * Create date: 28-05-2023 21:27:19
+     */
     handleSubmit() {
       if (this.isEdit) {
         this.updateEmployee()
       }
       else this.addEmployee()
     },
+      /**
+       * Description: Check mã nhân viên đã tồn tại hay chưa 
+       * Create by: Nguyen Quang Minh
+       * Create date: 28-05-2023 21:30:43
+       */
     checkExist() {
       let codeExist = this.employeeList.some(i => (i.EmployeeCode === this.employee.EmployeeCode))
       return codeExist
     },
+      /**
+       * Description: Xử lý khi message thất bại 
+       * Create by: Nguyen Quang Minh
+       * Create date: 28-05-2023 21:31:57
+       */
     messageFail() {
       this.showMessage = true
       this.typeMessage = 'fail'
@@ -226,13 +266,23 @@ export default {
         this.showMessage = false
       }, 1000);
     },
+      /**
+       * Description: Xử lý khi message thành công
+       * Create by: Nguyen Quang Minh
+       * Create date: 28-05-2023 21:32:26
+       */
     messageSuccess() {
       this.showMessage = true
       this.typeMessage = 'success'
       setTimeout(() => {
-        this.handleCloseEmployeeDetail()
+        this.closeEmployeeDetail()
       }, 1000);
     },
+      /**
+       * Description: Check validate các thông tin
+       * Create by: Nguyen Quang Minh
+       * Create date: 28-05-2023 21:32:43
+       */
     checkValidate() {
       if (this.employee.EmployeeCode === (undefined || '')) {
         this.$refs.employeeCode.$el.style.border = '1px solid red'
@@ -248,6 +298,11 @@ export default {
       }
       this.messageFail()
     },
+      /**
+       * Description: Chức năng thêm nhân viên 
+       * Create by: Nguyen Quang Minh
+       * Create date: 28-05-2023 21:35:52
+       */
     async addEmployee() {
       if (this.employee.EmployeeCode === '' || this.employee.FullName === '' || this.employee.UnitName === undefined || this.employee.UnitName === 'Bỏ chọn') {
         this.checkValidate()
@@ -262,6 +317,11 @@ export default {
         this.MisaDialogExist = true
       }
     },
+      /**
+       * Description: Chức năng sửa nhân viên
+       * Create by: Nguyen Quang Minh
+       * Create date: 28-05-2023 21:36:21
+       */
     async updateEmployee() {
       if (this.employee.EmployeeCode === '' || this.employee.FullName === '' || this.employee.UnitName === undefined || this.employee.UnitName === 'Bỏ chọn') {
         this.checkValidate()
